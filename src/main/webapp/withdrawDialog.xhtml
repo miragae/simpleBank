@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+<h:body>
+    <h:form prependId="false">
+        <p:outputPanel id="withdrawPanel">
+            <h:panelGrid columns="3" cellpadding="5">
+                <h:outputLabel for="wAmount" value="Withdraw amount:" />
+                <p:inputNumber maxValue="#{accountController.selectedAccount.balance}" id="wAmount" value="#{operationController.newOperation.amount}"/>
+                <p:outputLabel value="(max: #{accountController.selectedAccount.balance})"/>
+            </h:panelGrid>
+            <p:commandButton value="Cancel" onclick="PF('withdrawDialogVar').hide();" />
+            <p:commandButton value="Confirm" style="float: right" actionListener="#{operationController.withdraw()}" oncomplete="PF('withdrawDialogVar').hide();" ajax="false" />
+        </p:outputPanel>
+    </h:form>
+</h:body>
+</html>

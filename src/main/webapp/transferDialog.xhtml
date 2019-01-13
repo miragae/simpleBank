@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+<h:body>
+    <h:form prependId="false">
+        <p:outputPanel id="transferPanel">
+            <h:panelGrid columns="3" cellpadding="5">
+                <p:outputLabel value="From account:" />
+                <p:outputLabel value="#{accountController.selectedAccount.number}"/>
+                <p:outputLabel disabled="true" value="#{accountController.selectedAccount.bank == null ? '' : accountController.selectedAccount.bank.name}"/>
+
+                <h:outputLabel value="To account:" />
+                <p:inputText value="#{operationController.transferAccount.number}"/>
+                <p:outputLabel id="tTransferBank" disabled="true" value="#{operationController.transferAccount.bank == null ? '' : accountController.selectedAccount.bank.name}" style="color: limegreen;"/>
+
+                <p:commandButton value="Find account number" disabled="#{operationController.transferAccount.bank != null}" actionListener="#{operationController.findTransferAccount()}" update="@this, tConfirm, tTransferBank"/>
+                <p:outputLabel/>
+                <p:outputLabel/>
+
+                <h:outputLabel for="tAmount" value="Transfer amount:" />
+                <p:inputNumber maxValue="#{accountController.selectedAccount.balance}" id="tAmount" value="#{operationController.newOperation.amount}"/>
+                <p:outputLabel value="(max: #{accountController.selectedAccount.balance})"/>
+            </h:panelGrid>
+            <p:commandButton value="Cancel" onclick="PF('transferDialogVar').hide();" />
+            <p:commandButton value="Confirm" id="tConfirm" disabled="#{operationController.transferAccount.bank == null}" style="float: right" actionListener="#{operationController.transfer()}" oncomplete="PF('transferDialogVar').hide();" ajax="false" />
+        </p:outputPanel>
+    </h:form>
+</h:body>
+</html>

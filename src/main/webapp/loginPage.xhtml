@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+</h:head>
+<h:body>
+    <h:form>
+        <p:layout id="layout" fullPage="true">
+            <p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+            <p:layoutUnit position="north"  rendered="#{userController.renderUserView()}">
+                <p:outputLabel value="Logged in: #{userController.loggedUser.login}" style="float: left"/>
+                <p:commandButton value="Logout" actionListener="#{userController.logout}"  update="layout"  ajax="false" style="float: right;"  />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="west" size="175" header="Menu" rendered="#{userController.renderUserView()}">
+                <p:menu id="menuPanel" style="width: 150px" model="#{viewController.userMenu}" />
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" rendered="#{!userController.renderUserView()}" >
+                    <h:panelGrid columns="2" cellpadding="5" style="margin: 0 auto;">
+                        <h:outputLabel value="Login:" />
+                        <p:inputText value="#{userController.username}" label="username" />
+
+                        <h:outputLabel value="Password:" />
+                        <p:password value="#{userController.password}" label="password" />
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Login" actionListener="#{userController.login}" update="layout, menuPanel" ajax="false" style="float: right"/>
+                        </f:facet>
+                    </h:panelGrid>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" rendered="#{userController.renderUserView()}">
+                <f:facet name="header" >
+                    <p:outputLabel id="centerPanelHeader" value="#{viewController.menuHeader}" />
+                </f:facet>
+                <p:outputPanel id="centerPanel">
+
+                    <!-- ============================= -->
+                    <!-- ========== USERS ============ -->
+                    <!-- ============================= -->
+
+
+                    <p:panel id="usersPanel" rendered="#{viewController.menuId == 'USERS'}" >
+
+                        <p:dataTable value="#{userController.allUsers}" id="userDataTable" var="user" style="margin-top: 10px" paginator="true" rows="10">
+                            <f:facet name="header">
+                                <p:outputLabel value="#{userController.isAdmin() ? 'Users' : 'Clients'}" />
+                            </f:facet>
+                            <p:column headerText="Login">
+                                <p:outputLabel value="#{user.login}"/>
+                            </p:column>
+                            <p:column headerText="First name">
+                                <p:outputLabel value="#{user.firstName}"/>
+                            </p:column>
+                            <p:column headerText="Last name">
+                                <p:outputLabel value="#{user.lastName}"/>
+                            </p:column>
+                            <p:column headerText="ID number">
+                                <p:outputLabel value="#{user.idNumber}"/>
+                            </p:column>
+                            <p:column headerText="Type" rendered="#{userController.isAdmin()}">
+                                <p:outputLabel value="#{user.type}"/>
+                            </p:column>
+                            <p:column headerText="Details" >
+                                <p:commandButton value="Details" actionListener="#{userController.selectUserDetails(user)}" update="userDetailsPanel" oncomplete="PF('userDetailsDialogVar').show();" />
+                            </p:column>
+                        </p:dataTable>
+
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputLabel for="login" value="Login:" />
+                            <p:inputText id="login" value="#{userController.newUser.login}"/>
+
+                            <h:outputLabel for="password" value="Password:" />
+                            <p:password id="password" value="#{userController.newUser.password}" />
+
+                            <h:outputLabel for="firstName" value="First Name:" />
+                            <p:inputText id="firstName" value="#{userController.newUser.firstName}" />
+
+                            <h:outputLabel for="lastName" value="Last Name:" />
+                            <p:inputText id="lastName" value="#{userController.newUser.lastName}" />
+
+                            <h:outputLabel for="idNumber" value="ID Number:" />
+                            <p:inputText id="idNumber" value="#{userController.newUser.idNumber}" />
+
+                            <h:outputLabel for="usertype" value="Type:" rendered="#{userController.isAdmin()}"/>
+                            <p:selectOneMenu id="usertype"  value="#{userController.newUser.type}" rendered="#{userController.isAdmin()}">
+                                <f:selectItems value="#{userController.userTypes}"/>
+                            </p:selectOneMenu>
+
+                            <p:commandButton id="addUserButton" value="#{userController.isAdmin() ? 'Add user' : 'Add client'}"
+                                             actionListener="#{userController.addUser()}" update="usersPanel"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <!-- ============================= -->
+                    <!-- ========== BANKS ============ -->
+                    <!-- ============================= -->
+
+
+                    <p:panel id="banksPanel" rendered="#{viewController.menuId == 'BANKS'}" >
+
+                        <p:dataTable value="#{bankController.allBanks}" id="bankDataTable" var="bank" style="margin-top: 10px" paginator="true" rows="10">
+                            <f:facet name="header">
+                                <p:outputLabel value="Banks" />
+                            </f:facet>
+                            <p:column headerText="Name">
+                                <p:outputLabel value="#{bank.name}"/>
+                            </p:column>
+                            <p:column headerText="Address">
+                                <p:outputLabel value="#{bank.ip}:#{bank.port}"/>
+                            </p:column>
+                            <p:column headerText="Local">
+                                <p:selectBooleanCheckbox disabled="true" value="#{bank.local}" />
+                            </p:column>
+                        </p:dataTable>
+
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputLabel for="bankName" value="Name:" />
+                            <p:inputText id="bankName" value="#{bankController.newBank.name}"/>
+
+                            <h:outputLabel for="bankIp" value="Ip:" />
+                            <p:inputText id="bankIp" value="#{bankController.newBank.ip}" />
+
+                            <h:outputLabel for="bankPort" value="Port:" />
+                            <p:inputText id="bankPort" value="#{bankController.newBank.port}" />
+
+                            <p:commandButton id="addBankButton" value="Add bank" actionListener="#{bankController.addBank()}" update="banksPanel"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <!-- ============================= -->
+                    <!-- ========== ACCOUNTS ========= -->
+                    <!-- ============================= -->
+
+                    <p:panel id="accountsPanel" rendered="#{viewController.menuId == 'ACCOUNTS'}" >
+
+                        <p:dataTable value="#{accountController.allAccounts}" id="accountDataTable" var="account" style="margin-top: 10px" paginator="true" rows="10">
+                            <f:facet name="header">
+                                <p:outputLabel value="Accounts" />
+                            </f:facet>
+                            <p:column headerText="Owner">
+                                <p:outputLabel value="#{account.owner.firstName} #{account.owner.lastName} (#{account.owner.login})"/>
+                            </p:column>
+                            <p:column headerText="Bank">
+                                <p:outputLabel value="#{account.bank == null ? '' : account.bank.name}"/>
+                            </p:column>
+                            <p:column headerText="Number">
+                                <p:outputLabel value="#{account.number}"/>
+                            </p:column>
+                            <p:column headerText="Balance">
+                                <p:outputLabel value="#{account.balance}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+
+                    <!-- ============================= -->
+                    <!-- ========== OPERATIONS ======= -->
+                    <!-- ============================= -->
+
+
+                    <p:panel id="operationsPanel" rendered="#{viewController.menuId == 'OPERATIONS'}" >
+
+                        <p:outputLabel value="Search: " style="padding: 5px 10px;"/>
+                        <p:autoComplete value="#{userController.selectedUser}" completeMethod="#{userController.completeClients}"
+                                        var="user" itemLabel="#{user.displayName}" itemValue="#{user}" size="30"
+                                        converter="#{userConverter}">
+                            <p:ajax event="itemSelect" listener="#{userController.selectUser()}" update="userPanel"/>
+                        </p:autoComplete>
+
+                        <p:panel id="userPanel" style="margin-top: 10px;" visible="#{userController.selectedUser.id != null}">
+                            <h:panelGrid columns="2" cellpadding="5" >
+                                <h:outputLabel for="opFirstName" value="First Name:" />
+                                <p:outputLabel id="opFirstName" value="#{userController.selectedUser.firstName}" />
+
+                                <h:outputLabel for="opLastName" value="Last Name:" />
+                                <p:outputLabel id="opLastName" value="#{userController.selectedUser.lastName}" />
+
+                                <h:outputLabel for="opIdNumber" value="ID Number:" />
+                                <p:outputLabel id="opIdNumber" value="#{userController.selectedUser.idNumber}" />
+
+                                <h:outputLabel for="opAccountNumber" value="Account number:" />
+                                <p:outputLabel id="opAccountNumber" value="#{accountController.selectedAccount.number}" />
+
+                                <h:outputLabel for="opAccountBalance" value="Balance:" />
+                                <p:outputLabel id="opAccountBalance" value="#{accountController.selectedAccount.balance}" />
+
+                            </h:panelGrid>
+
+                            <p:commandButton id="depositButton" value="Deposit" onclick="PF('depositDialogVar').show();"/>
+                            <p:commandButton id="withdrawButton" value="Withdraw" onclick="PF('withdrawDialogVar').show();" disabled="#{accountController.selectedAccountEmpty}" update="withdrawPanel"  />
+                            <p:commandButton id="transferButton" value="Transfer" onclick="PF('transferDialogVar').show();" disabled="#{accountController.selectedAccountEmpty}" update="transferPanel"  />
+                        </p:panel>
+
+                    </p:panel>
+
+
+
+                    <!-- ============================= -->
+                    <!-- ========== BALANCE ========== -->
+                    <!-- ============================= -->
+
+                    <p:panel id="userBalancePanel" rendered="#{viewController.menuId == 'BALANCE'}" >
+                        <h:panelGrid columns="2" cellpadding="5" >
+                            <h:outputLabel for="userAccountNumber" value="Account number:" />
+                            <p:outputLabel id="userAccountNumber" value="#{accountController.selectedAccount.number}" />
+                            <p:outputLabel for="userBalanceAmount" value="Account balance:" />
+                            <p:outputLabel id="userBalanceAmount" value="#{accountController.selectedAccount.balance}" />
+                            <p:commandButton value="Refresh" style="margin-left: 20px" update="userBalancePanel" />
+                        </h:panelGrid>
+                    </p:panel>
+
+
+
+                    <!-- ============================= -->
+                    <!-- ========== TRANSFER ========= -->
+                    <!-- ============================= -->
+
+                    <p:panel id="userTransferPanel" rendered="#{viewController.menuId == 'TRANSFER'}" >
+                        <h:panelGrid columns="2" cellpadding="5" >
+                            <h:outputLabel for="utFirstName" value="First Name:" />
+                            <p:outputLabel id="utFirstName" value="#{userController.loggedUser.firstName}" />
+
+                            <h:outputLabel for="utLastName" value="Last Name:" />
+                            <p:outputLabel id="utLastName" value="#{userController.loggedUser.lastName}" />
+
+                            <h:outputLabel for="utIdNumber" value="ID Number:" />
+                            <p:outputLabel id="utIdNumber" value="#{userController.loggedUser.idNumber}" />
+
+                            <h:outputLabel for="utAccountNumber" value="Account number:" />
+                            <p:outputLabel id="utAccountNumber" value="#{accountController.selectedAccount.number}" />
+
+                            <h:outputLabel for="utAccountBalance" value="Balance:" />
+                            <p:outputLabel id="utAccountBalance" value="#{accountController.selectedAccount.balance}" />
+
+                            <p:commandButton id="userTransferButton" value="Transfer" onclick="PF('transferDialogVar').show();" disabled="#{accountController.selectedAccountEmpty}" update="transferPanel"  />
+                        </h:panelGrid>
+                    </p:panel>
+
+
+
+                    <!-- ============================= -->
+                    <!-- ========== HISTORY ========== -->
+                    <!-- ============================= -->
+
+
+                    <p:panel id="userHistoryPanel" rendered="#{viewController.menuId == 'HISTORY'}" >
+
+                        <p:dataTable value="#{userController.allUserOperations}" id="operationDataTable" var="operation" style="margin-top: 10px" paginator="true" rows="10">
+                            <f:facet name="header">
+                                <p:outputLabel value="Operations" />
+                            </f:facet>
+                            <p:column headerText="From account">
+                                <p:outputLabel value="#{operation.fromAccount == null ? '' : operation.fromAccount.number}
+                                                        #{operation.fromAccount == null ? '' : operation.fromAccount.bank.name}"/>
+                            </p:column>
+                            <p:column headerText="To account">
+                                <p:outputLabel value="#{operation.toAccount == null ? '' : operation.toAccount.number}
+                                                        #{operation.toAccount == null ? '' : operation.toAccount.bank.name}"/>
+                            </p:column>
+                            <p:column headerText="Type">
+                                <p:outputLabel value="#{operation.type}"/>
+                            </p:column>
+                            <p:column headerText="Amount">
+                                <p:outputLabel value="#{operation.amount}"/>
+                            </p:column>
+                            <p:column headerText="Time">
+                                <p:outputLabel value="#{operation.operationTime}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+
+                </p:outputPanel>
+            </p:layoutUnit>
+        </p:layout>
+    </h:form>
+
+
+    <p:dialog widgetVar="userDetailsDialogVar" header="User Details" closable="true" modal="true" width="1100" resizable="false" >
+        <ui:include src="userDetailsDialog.xhtml"/>
+    </p:dialog>
+
+    <p:dialog widgetVar="depositDialogVar" header="Deposit" closable="true" modal="true" width="600" resizable="false" >
+        <ui:include src="depositDialog.xhtml"/>
+    </p:dialog>
+
+    <p:dialog widgetVar="withdrawDialogVar" header="Withdraw" closable="true" modal="true" width="600" resizable="false" >
+        <ui:include src="withdrawDialog.xhtml"/>
+    </p:dialog>
+
+    <p:dialog widgetVar="transferDialogVar" header="Transfer" closable="true" modal="true" width="1100" resizable="false" >
+        <ui:include src="transferDialog.xhtml"/>
+    </p:dialog>
+</h:body>
+</html>
