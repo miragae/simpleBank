@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  app:
+    build:
+         context: .
+         dockerfile: Dockerfile
+    container_name: "wildfly_bank"
+    image: "wildfly"
+    environment:
+      - WILDFLY_USER=admin
+      - WILDFLY_PASS=password
+      - DB_USER=maria
+      - DB_PASS=maria
+      - DB_URI=db:3306
+    depends_on:
+      - db
+    ports:
+      - "8081:8080" # application
+      - "9991:9990" # admin console
+
+  db:
+    container_name: "mariadb_bank"
+    image: "mariadb:latest"
+    environment:
+      - MYSQL_DATABASE=bankdb
+      - MYSQL_USER=maria
+      - MYSQL_PASSWORD=maria
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./script/:/docker-entrypoint-initdb.d/ # init database
+    ports:
+      - "3307:3306"
+
+
+networks:
+    default:
+        driver: bridge
