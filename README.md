@@ -1,5 +1,14 @@
 # Simple Bank
 
+**Stack technologii:**
+* baza: MariaDB
+* implementacja: Java Enterprise Edition + Enterprise JavaBeans
+* ORM: Hibernate
+* serwer aplikacyjny: Wildfly
+* interfejs użytkownika: JSF + PrimeFaces
+* budowanie: Maven
+* uruchamianie aplikacji: Docker Compose
+
 # Dokumentacja
 
 ## 1. Instrukcja instalacji, konfiguracji i pierwsze kroki
