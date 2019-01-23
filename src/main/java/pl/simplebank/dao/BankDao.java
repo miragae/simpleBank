@@ -28,11 +28,11 @@ public class BankDao extends AbstractDao<Bank> implements BankDaoLocal {
     }
 
     @Override
-    public Bank findByPort(String port) {
+    public Bank findByIp(String ip) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Bank> query = cb.createQuery(Bank.class);
         Root<Bank> from = query.from(Bank.class);
-        query.where(cb.equal(from.get(Bank_.port), port));
+        query.where(cb.equal(from.get(Bank_.ip), ip));
         query.select(from);
         List<Bank> resultList = getEntityManager().createQuery(query).getResultList();
         return resultList.isEmpty() ? null : resultList.get(0);

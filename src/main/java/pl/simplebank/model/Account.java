@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "account")
 public class Account implements Serializable {
 
     private Long id;
@@ -32,7 +33,7 @@ public class Account implements Serializable {
         this.number = number;
     }
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     public User getOwner() {
         return owner;
     }
@@ -50,7 +51,7 @@ public class Account implements Serializable {
         this.balance = balance;
     }
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     public Bank getBank() {
         return bank;
     }

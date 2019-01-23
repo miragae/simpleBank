@@ -22,7 +22,13 @@ public class UserConverter implements Converter {
         if(value == null || value.equals("null")) {
             return null;
         }
-        return userDao.find(Long.valueOf(value));
+        try {
+            return userDao.find(Long.valueOf(value));
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "operation")
 public class Operation implements Serializable {
 
     private Long id;
@@ -43,7 +44,7 @@ public class Operation implements Serializable {
         this.amount = amount;
     }
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     public Account getFromAccount() {
         return fromAccount;
     }
@@ -52,7 +53,7 @@ public class Operation implements Serializable {
         this.fromAccount = fromAccount;
     }
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     public Account getToAccount() {
         return toAccount;
     }

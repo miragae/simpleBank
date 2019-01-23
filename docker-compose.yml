@@ -2,27 +2,41 @@ version: '3'
 
 services:
 
-  app:
+  bank1:
     build:
          context: .
          dockerfile: Dockerfile
-    container_name: "wildfly_bank"
+    container_name: "wildfly_bank1"
     image: "wildfly"
-    environment:
-      - WILDFLY_USER=admin
-      - WILDFLY_PASS=password
-      - DB_USER=maria
-      - DB_PASS=maria
-      - DB_URI=db:3306
+    links:
+      - db1:db
     depends_on:
-      - db
+      - db1
     ports:
       - "8081:8080" # application
       - "9991:9990" # admin console
 
-  db:
-    container_name: "mariadb_bank"
+  bank2:
+    build:
+         context: .
+         dockerfile: Dockerfile
+    container_name: "wildfly_bank2"
+    image: "wildfly"
+    links:
+      - db2:db
+    depends_on:
+      - db2
+    ports:
+      - "8082:8080" # application
+      - "9992:9990" # admin console
+      - "8789:8787" # debug
+    expose:
+      - "8080"
+
+  db1:
+    container_name: "mariadb_bank1"
     image: "mariadb:latest"
+    command: --lower_case_table_names=1
     environment:
       - MYSQL_DATABASE=bankdb
       - MYSQL_USER=maria
@@ -33,6 +47,19 @@ services:
     ports:
       - "3307:3306"
 
+  db2:
+    container_name: "mariadb_bank2"
+    image: "mariadb:latest"
+    command: --lower_case_table_names=1
+    environment:
+      - MYSQL_DATABASE=bankdb
+      - MYSQL_USER=maria
+      - MYSQL_PASSWORD=maria
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./script/:/docker-entrypoint-initdb.d/ # init database
+    ports:
+      - "3308:3306"
 
 networks:
     default:

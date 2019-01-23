@@ -9,14 +9,13 @@ import org.apache.http.impl.client.HttpClients;
 import pl.simplebank.model.Bank;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 public class BankConnectionService {
 
-    public static final String HTTP_PREFIX = "http://";
-    public static final String BANK_PATH = "/SimpleBank/faces/rest/bank/";
-    public static final String PATH_SEPARATOR = "/";
-    public static final String USER_AGENT = "SimpleBank";
+    private static final String HTTP_PREFIX = "http://";
+    private static final String BANK_PATH = "/SimpleBank/faces/rest/bank/";
+    private static final String PATH_SEPARATOR = "/";
+    private static final String USER_AGENT = "SimpleBank";
 
     private static final int SOCKET_TIMEOUT = 2000;
     private static final int CONNECT_TIMEOUT = 2000;
@@ -33,8 +32,6 @@ public class BankConnectionService {
 
         try(CloseableHttpResponse response = httpClient.execute(httpGet)) {
             return response.getStatusLine().getStatusCode() == 200;
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -82,11 +79,10 @@ public class BankConnectionService {
     }
 
     private RequestConfig createRequestConfig(){
-        RequestConfig config = RequestConfig.custom()
+        return RequestConfig.custom()
                 .setSocketTimeout(SOCKET_TIMEOUT)
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
                 .build();
-        return config;
     }
 }

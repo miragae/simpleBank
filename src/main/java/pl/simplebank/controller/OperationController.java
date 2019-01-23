@@ -117,13 +117,13 @@ public class OperationController implements Serializable {
             transferAccount.setBalance(transferAccount.getBalance().add(newOperation.getAmount()));
             accountDao.update(transferAccount);
         } else {
-            if(bankConnectionService.sendTransfer(
-                    transferAccount.getNumber(),
-                    accountController.getSelectedAccount().getNumber(),
-                    newOperation.getAmount().toString(), transferAccount.getBank())) {
-                executeOperation(newOperation.getAmount().negate());
-            } else {
-                addFacesMessage("Can't send bank transfer.", "");
+            String accountTo = transferAccount.getNumber();
+            String accountFrom = accountController.getSelectedAccount().getNumber();
+            String amount = newOperation.getAmount().toString();
+            Bank bankTo = transferAccount.getBank();
+            boolean successfulTransfer = bankConnectionService.sendTransfer(accountTo, accountFrom, amount, bankTo);
+            if (!successfulTransfer) {
+                addFacesMessage("Can't send bank transfer.", bankTo.getName()+" rejected transfer");
                 return;
             }
         }

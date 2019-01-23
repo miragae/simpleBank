@@ -1,12 +1,12 @@
 package pl.simplebank.controller;
 
 import pl.simplebank.dao.AccountDaoLocal;
+import pl.simplebank.dao.BankDaoLocal;
 import pl.simplebank.model.Account;
 import pl.simplebank.model.User;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,9 +21,8 @@ public class AccountController implements Serializable {
 
     @EJB
     AccountDaoLocal accountDao;
-
-    @Inject
-    BankController bankController;
+    @EJB
+    BankDaoLocal bankDao;
 
     private Account selectedAccount;
 
@@ -40,7 +39,7 @@ public class AccountController implements Serializable {
 
     public void generateNewAccount(User user) {
         Account account = new Account();
-        account.setBank(bankController.getLocalBank());
+        account.setBank(bankDao.findLocalBank());
         account.setBalance(ZERO);
         account.setOwner(user);
         account.setNumber(generateUniqueAccountNumber());

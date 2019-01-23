@@ -25,30 +25,16 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
-    <!--<servlet>-->
-        <!--<servlet-name>Rest Serlvet</servlet-name>-->
-        <!--<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>-->
-        <!--<init-param>-->
-            <!--<param-name>jersey.config.server.provider.packages</param-name>-->
-            <!--<param-value>pl.simplebank.rest</param-value>-->
-        <!--</init-param>-->
-        <!--<load-on-startup>1</load-on-startup>-->
-    <!--</servlet>-->
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>Rest Serlvet</servlet-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>javax.ws.rs.core.Application</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>faces/loginPage.xhtml</welcome-file>
+        <welcome-file>faces/mainPage.xhtml</welcome-file>
     </welcome-file-list>
 </web-app>

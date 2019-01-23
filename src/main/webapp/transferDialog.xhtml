@@ -16,7 +16,7 @@
 
                 <h:outputLabel value="To account:" />
                 <p:inputText value="#{operationController.transferAccount.number}"/>
-                <p:outputLabel id="tTransferBank" disabled="true" value="#{operationController.transferAccount.bank == null ? '' : accountController.selectedAccount.bank.name}" style="color: limegreen;"/>
+                <p:outputLabel id="tTransferBank" disabled="true" value="#{operationController.transferAccount.bank == null ? '' : operationController.transferAccount.bank.name}" style="color: limegreen;"/>
 
                 <p:commandButton value="Find account number" disabled="#{operationController.transferAccount.bank != null}" actionListener="#{operationController.findTransferAccount()}" update="@this, tConfirm, tTransferBank"/>
                 <p:outputLabel/>

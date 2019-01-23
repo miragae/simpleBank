@@ -16,11 +16,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static java.math.BigDecimal.ZERO;
 import static pl.simplebank.model.UserType.ADMIN;
 import static pl.simplebank.model.UserType.CLIENT;
 
@@ -155,7 +154,11 @@ public class UserController implements Serializable {
     }
 
     public List<Operation> getAllUserOperations() {
-        return operationDao.findByAccount(accountController.getSelectedAccount());
+        if (accountController.getSelectedAccount().getId() != null) {
+            return operationDao.findByAccount(accountController.getSelectedAccount());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     public List<UserType> getUserTypes() {
